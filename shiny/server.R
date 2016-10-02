@@ -12,6 +12,7 @@ mt$am <- factor(mt$am,labels=c('Automatic','Manual'))
 # str(mt)
 
 models <- sort(unique(row.names(mtcars)))
+mpg <-  sort(unique(mt$mpg))
 cyl <-  sort(unique(mt$cyl))
 am <-  sort(unique(mt$am))
 gear <-  sort(unique(mt$gear))
@@ -22,7 +23,7 @@ shinyServer(
     
     # Define and initialize reactive values
     values <- reactiveValues()
-    values$models <- models
+    values$mpg <- mpg
     values$cyl <- cyl
     values$am <- factor(am,labels=c('Automatic','Manual'))
     values$gear <- gear
@@ -44,7 +45,7 @@ shinyServer(
     dataTable <- reactive({
       
       mt_show <- mt
-      mt_show <- mt_show[mt_show$mpg %between% input$mpg,]
+      if(!is.null(input$cyl )) mt_show <- mt_show[between(mt_show$mpg,input$mpg[1],input$mpg[2]),]
       if(!is.null(input$cyl )) mt_show <- mt_show[mt_show$cyl %in% input$cyl,]
       if(!is.null(input$am  )) mt_show <- mt_show[mt_show$am %in% input$am,]
       if(!is.null(input$gear)) mt_show <- mt_show[mt_show$gear %in% input$gear,]
